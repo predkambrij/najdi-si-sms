@@ -8,7 +8,7 @@ setup(name='najdisi-sms',
       long_description="""""",
       classifiers=[],  # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
       keywords='',
-      author='Domen Kozar, Andraz Bronik',
+      author='Domen Kozar, Andraz Brodnik',
       author_email='brodul@brodul.org',
       url='',
       license='BSD',
