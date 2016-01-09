@@ -17,7 +17,7 @@ setup(name='najdisi-sms',
       zip_safe=False,
       install_requires=[
           # -*- Extra requirements: -*-
-          'requests==2.2.1',
+          'requests==2.9.1',
           'beautifulsoup4==4.3.2',
       ],
       entry_points="""
