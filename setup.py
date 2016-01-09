@@ -6,7 +6,7 @@ setup(name='najdisi-sms',
       version=version,
       description="Najdi.si sms command line sender",
       long_description="""""",
-      classifiers=[], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
+      classifiers=[],  # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
       keywords='',
       author='Domen Kozar',
       author_email='domen@dev.si',
@@ -17,8 +17,8 @@ setup(name='najdisi-sms',
       zip_safe=False,
       install_requires=[
           # -*- Extra requirements: -*-
-          'requests',
-          'beautifulsoup4',
+          'requests==2.2.1',
+          'beautifulsoup4==4.3.2',
       ],
       entry_points="""
       [console_scripts]
