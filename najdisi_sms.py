@@ -41,7 +41,7 @@ def validate_attrs(obj, d):
     otherwise raise Exception (the key value of d)
 
     """
-    for k, v in d.iteritems():
+    for k, v in d.items():
         if not hasattr(obj, k):
             raise v()
 
