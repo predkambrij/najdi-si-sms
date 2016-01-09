@@ -75,6 +75,7 @@ def main():
     try:
         who = args.pop(0)
     except IndexError:
+        parser.print_help()
         raise NoRecipientpNumError()
 
     msg = ' '.join(args)
