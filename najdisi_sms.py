@@ -136,7 +136,7 @@ class SMSSender(object):
     def sent(self, receiver, msg):
         """Sent the message.
 
-        :receiver: Reciever number (only Slovenian supported)
+        :receiver: Receiver number (only Slovenian supported)
         :msg: SMS body message
         :returns: True if sending succeeded, else False.
 
