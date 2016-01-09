@@ -163,7 +163,7 @@ class SMSSender(object):
             'http://www.najdi.si/najdi.layoutnajdi.loginlink:login?t:ac=sms'
         )
 
-        soup = BeautifulSoup(response.text)
+        soup = BeautifulSoup(response.text, "html.parser")
         formdata_els = soup.findAll(attrs={'name': 't:formdata'})
         formdata_value = formdata_els[0].attrs['value']
 
