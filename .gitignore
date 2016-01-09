@@ -3,3 +3,6 @@
 /lib
 /*.egg-info
 /share
+
+# ignore venv
+/venv
