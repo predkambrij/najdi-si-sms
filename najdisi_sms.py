@@ -47,18 +47,18 @@ def validate_attrs(obj, d):
 
 
 def main():
-    parser = OptionParser(usage="%prog -u username -p password who msg")
+    parser = OptionParser(usage="%prog -u username -p password  RECEIVER_NUM  MESSAGE")
     parser.add_option(
         "-u",
         "--username",
         dest="username",
-        help=u"Uporabniško ime"
+        help=u"Username"
     )
     parser.add_option(
         "-p",
         "--password",
         dest="password",
-        help=u"Geslo"
+        help=u"Password"
     )
     parser.add_option(
         "-A",
@@ -129,7 +129,7 @@ class SMSSender(object):
 
         """
         if len(msg) > 160:
-            raise Exception('predolgo sporocilo')
+            raise Exception('Message to long')
 
         return msg
 
@@ -151,10 +151,10 @@ class SMSSender(object):
 
         base_code, recipient = self.normalize_receiver(receiver)
 
-        log.info('Omrezna koda: %s', base_code)
-        log.info('Prejemnik: %s', recipient)
-        log.info('Sporocilo: %s',  msg)
-        log.info('Posiljam sms ...')
+        log.info('Network code: %s', base_code)
+        log.info('Receiver : %s', recipient)
+        log.info('Message: %s', msg)
+        log.info('Sending SMS ...')
 
         s = requests.Session()
         s.headers.update({'User-Agent': self.useragent})
