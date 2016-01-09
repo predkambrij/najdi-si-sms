@@ -6,3 +6,4 @@
 
 # ignore venv
 /venv
+/dist
