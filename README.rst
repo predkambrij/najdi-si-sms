@@ -67,7 +67,7 @@ Standalone CLI command
 
 Example::
 
-  najdisi-sms -u brodul -p FUBAR_PASS 031123456 "Pikica, rad te mam. (send from cronjob)"
+  najdisi-sms -u brodul -p FUBAR_PASS 031123456 "Pikica, rad te mam. (sent from cronjob)"
 
 Python API
 ++++++++++
@@ -79,5 +79,5 @@ Example::
   sms = SMSSender('username', 'password')
   sms.send(
       '031123456',
-      'Pikica, rad te mam. (send from cronjob)'
+      'Pikica, rad te mam. (sent from cronjob)'
   )
