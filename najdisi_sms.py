@@ -81,7 +81,7 @@ def main():
     msg = ' '.join(args)
 
     sender = SMSSender(options.username, options.password, options.useragent)
-    sender.sent(who, msg)
+    sender.send(who, msg)
 
 
 class SMSSender(object):
@@ -134,8 +134,8 @@ class SMSSender(object):
 
         return msg
 
-    def sent(self, receiver, msg):
-        """Sent the message.
+    def send(self, receiver, msg):
+        """send the message.
 
         :receiver: Receiver number (only Slovenian supported)
         :msg: SMS body message
