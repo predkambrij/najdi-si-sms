@@ -46,7 +46,7 @@ def validate_attrs(obj, d):
             raise v()
 
 
-def main():
+def create_parser():
     parser = OptionParser(usage="%prog -u username -p password  RECEIVER_NUM  MESSAGE")
     parser.add_option(
         "-u",
@@ -68,6 +68,10 @@ def main():
         default="Mozilla/5.0 (Windows; U; Windows NT 6.1; es-ES; rv:1.9.2.3)"
         + "Gecko/20100401 Firefox/3.6.3"
     )
+
+
+def main():
+    parser = create_parser()
     (options, args) = parser.parse_args()
     for option in ('username', 'password'):
         if not hasattr(options, option):
