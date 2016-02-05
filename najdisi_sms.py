@@ -1,7 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+"""
 
-from optparse import OptionParser
+from argparse import ArgumentParser
+import sys
+if sys.version_info < (3, 0):
+    from ConfigParser import ConfigParser
+else:
+    from configparser import ConfigParser
+import os
 import logging
 
 import requests
@@ -12,80 +20,110 @@ log = logging.getLogger("najdisi_sms")
 log.setLevel(logging.INFO)
 
 
-class MissingSettingsError(TypeError):
-    pass
+class SettingParser(object):
+    """docstring for SettingParser"""
+    def __init__(self, args=None):
+        self.args = args or sys.argv[1:]
 
+        home = os.path.expanduser('~')
+        self.default_config_path = os.path.join(
+            home,
+            '.config',
+            'najdisi_sms.ini'
+        )
 
-class NoPasswordError(MissingSettingsError):
-    def __str__(self):
-        return "Please set the password"
+        self.argparser = self.create_argparser()
+        self.parser_space = self.argparser.parse_args(self.args)
 
+        self.namespace = self.merge_settings(self.parser_space)
+        self.check_password_username(self.namespace)
 
-class NoUsernameError(MissingSettingsError):
-    def __str__(self):
-        return "Please set the username"
+    def create_argparser(self):
+        parser = ArgumentParser()
+        parser.add_argument(
+            "rec_num",
+            metavar=u"RECEIVER_NUM",
+            help="slovenian phone number starting with 0"
+        )
+        parser.add_argument(
+            "message",
+            metavar=u"MESSAGE",
+            help="SMS message (less than 160 characters)"
+        )
+        parser.add_argument(
+            "-c",
+            "--configfile",
+            dest="config",
+            help=u"Config file",
+            default=self.default_config_path
+        )
+        parser.add_argument(
+            "-u",
+            "--username",
+            dest="username",
+            help=u"Username"
+        )
+        parser.add_argument(
+            "-p",
+            "--password",
+            dest="password",
+            help=u"Password"
+        )
+        parser.add_argument(
+            "-A",
+            "--useragent",
+            dest="useragent",
+            help=u"HTTP User Agent",
+            default="Mozilla/5.0 (Windows; U; Windows NT 6.1; es-ES; rv:1.9.2.3)"
+            + "Gecko/20100401 Firefox/3.6.3"
+        )
+        return parser
 
+    def merge_settings(self, parser_space):
+        """
+        Merge config file and cli options
+        """
 
-class NoMsgError(MissingSettingsError):
-    def __str__(self):
-        return "Please set the message"
+        def parse_ini(file_path):
+            config = ConfigParser()
+            config.read(file_path)
+            return config
 
+        if os.path.exists(parser_space.config):
+            ini_config = parse_ini(parser_space.config)
+            for attr in ['username', 'password']:
+                setattr(
+                    parser_space,
+                    attr,
+                    getattr(parser_space, attr, None) or ini_config.get('najdisi_sms', attr)
+                )
+        elif not self.default_config_path == parser_space.config:
+            log.info('Config file you specified not found!')
 
-class NoRecipientpNumError(MissingSettingsError):
-    def __str__(self):
-        return "Please set the recipient number"
+        return parser_space
 
-
-def validate_attrs(obj, d):
-    """Check if obj has the attr equal to the key of d,
-    otherwise raise Exception (the key value of d)
-
-    """
-    for k, v in d.items():
-        if not hasattr(obj, k):
-            raise v()
-
-
-def create_parser():
-    parser = OptionParser(usage="%prog -u username -p password  RECEIVER_NUM  MESSAGE")
-    parser.add_option(
-        "-u",
-        "--username",
-        dest="username",
-        help=u"Username"
-    )
-    parser.add_option(
-        "-p",
-        "--password",
-        dest="password",
-        help=u"Password"
-    )
-    parser.add_option(
-        "-A",
-        "--useragent",
-        dest="useragent",
-        help=u"HTTP User Agent",
-        default="Mozilla/5.0 (Windows; U; Windows NT 6.1; es-ES; rv:1.9.2.3)"
-        + "Gecko/20100401 Firefox/3.6.3"
-    )
+    def check_password_username(self, namespace):
+        for attr in ['username', 'password']:
+            if not getattr(namespace, attr):
+                raise LookupError("Missing {}!".format(attr))
 
 
 def main():
-    parser = create_parser()
-    (options, args) = parser.parse_args()
-    for option in ('username', 'password'):
-        if not hasattr(options, option):
-            parser.error('%s not given' % option.upper())
-    try:
-        who = args.pop(0)
-    except IndexError:
-        parser.print_help()
-        raise NoRecipientpNumError()
+    parser = SettingParser()
+    namespace = parser.namespace
+    # parser = create_argparser()
+    # namespace = parser.parse_args()
+    #
+    # namespace = merge_settings(parser, namespace)
+    # try:
+    #     check_password_username(namespace)
+    # except LookupError as e:
+    #     parser.print_help()
+    #     log.error(e.args[0])
+    #     parser.exit(1)
 
-    msg = ' '.join(args)
-
-    sender = SMSSender(options.username, options.password, options.useragent)
-    sender.send(who, msg)
+    sender = SMSSender(namespace.username, namespace.password, namespace.useragent)
+    sender.send(namespace.rec_num, namespace.message)
 
 
 class SMSSender(object):
@@ -98,12 +136,6 @@ class SMSSender(object):
         da = "Mozilla/5.0 (Windows; U; Windows NT 6.1; es-ES; rv:1.9.2.3)" \
             + "Gecko/20100401 Firefox/3.6.3"
         self.useragent = useragent or da
-
-        self.error_d = {
-            'username': NoUsernameError,
-            'password': NoPasswordError,
-        }
-        validate_attrs(self, self.error_d)
 
     def normalize_receiver(self, receiver_num):
         """
@@ -146,11 +178,6 @@ class SMSSender(object):
         :returns: True if sending succeeded, else False.
 
         """
-
-        if not receiver:
-            raise NoRecipientpNumError()
-        if not msg:
-            raise NoMsgError()
 
         msg = self.check_msg_leng(msg)
 
