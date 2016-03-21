@@ -188,10 +188,10 @@ class SMSSender(object):
         log.info('Message: %s', msg)
         log.info('Sending SMS ...')
 
-        s = requests.Session()
-        s.headers.update({'User-Agent': self.useragent})
+        self.s = requests.Session()
+        self.s.headers.update({'User-Agent': self.useragent})
 
-        response = s.get(
+        response = self.s.get(
             'http://www.najdi.si/najdi.layoutnajdi.loginlink:login?t:ac=sms'
         )
 
@@ -205,7 +205,7 @@ class SMSSender(object):
             'jsecRememberMe': 'on',
             'jsecPassword': self.password
         }
-        response = s.post(
+        response = self.s.post(
             'http://www.najdi.si/prijava.jsecloginform',
             data
         )
@@ -230,7 +230,7 @@ class SMSSender(object):
             't:submit': '["send","send"]',
             't:zoneid': 'smsZone'
         }
-        response = s.post(
+        response = self.s.post(
             "http://www.najdi.si/najdi.shortcutplaceholder.freesmsshortcut.smsform",
             data,
             headers={"X-Requested-With": "XMLHttpRequest"}
