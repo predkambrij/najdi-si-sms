@@ -8,6 +8,8 @@ tests_require = [
 testing_extras = tests_require + [
     'nose',
     'coverage',
+    'betamax',
+    'betamax_serializers',
 ]
 
 setup(name='najdisi-sms',
