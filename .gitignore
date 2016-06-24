@@ -4,9 +4,12 @@
 /*.egg-info
 /share
 
+/.eggs
+
 # ignore venv
 /venv
 /dist
 
 /.coverage
 /.tox
+/docs/_*
