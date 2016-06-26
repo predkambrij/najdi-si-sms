@@ -3,13 +3,17 @@ from setuptools import setup
 version = '0.3.2'
 
 tests_require = [
-    'response',
+    'responses',
 ]
 testing_extras = tests_require + [
     'nose',
     'coverage',
     'betamax',
     'betamax_serializers',
+]
+docs_extras = [
+    'sphinx',
+    'sphinx-autobuild',
 ]
 
 setup(name='najdisi-sms',
@@ -48,9 +52,11 @@ setup(name='najdisi-sms',
           'beautifulsoup4==4.3.2',
       ],
       extras_require={
-          'testing': testing_extras,
+          'tests': testing_extras,
+          'docs': docs_extras,
       },
       tests_require=tests_require,
+      test_suite='nose.collector',
 
       entry_points="""
       [console_scripts]
