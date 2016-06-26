@@ -10,3 +10,11 @@ Example::
       '031123456',
       'Pikica, rad te mam. (sent from cronjob)'
   )
+
+API
+---
+
+.. automodule:: najdisi_sms.api
+
+.. autoclass:: najdisi_sms.api.SMSSender
+    :members:

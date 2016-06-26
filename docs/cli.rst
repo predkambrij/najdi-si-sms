@@ -17,8 +17,3 @@ Standalone CLI command
 Example::
 
   najdisi-sms -u brodul -p FUBAR_PASS 031123456 "Pikica, rad te mam. (sent from cronjob)"
-
-.. automodule:: najdisi_sms.api
-
-.. autoclass:: najdisi_sms.api.SMSSender
-    :members:

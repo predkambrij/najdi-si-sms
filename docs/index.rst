@@ -11,6 +11,10 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   installation
+   intro
+   cli
+   api
 
 Indices and tables
 ==================
