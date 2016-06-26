@@ -5,6 +5,10 @@
 """
 import logging
 
+from .cli import SMSSender
+
+__all__ = ["SMSSender"]
+
 logging.basicConfig()
 log = logging.getLogger("najdisi_sms")
 log.setLevel(logging.INFO)
