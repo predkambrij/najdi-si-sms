@@ -2,7 +2,21 @@
 Najdi-si-sms
 ============
 
+
+
+.. image:: https://travis-ci.org/brodul/najdi-si-sms.svg?branch=master
+        :target: https://travis-ci.org/brodul/najdi-si-sms
+        :alt: Master Travis CI Status
+
+.. image:: https://readthedocs.org/projects/najdisi-sms/badge/?version=latest
+        :target: http://najdisi-sms.readthedocs.io/en/latest/
+        :alt: Latest Documentation Status
+
 Command line utility to send automated sms through Slovenian Najdi.si service (40 sms per day for free).
+
+For additional information visit `the documentation`_
+
+.. _`the documentation`: http://najdisi-sms.readthedocs.io/en/latest/
 
 How to use
 ==========
@@ -35,10 +49,6 @@ You can install the package systemwide with (you need su access)::
   make install
   #or
   pip install .
-
-You can also install the requirements with::
-
-  pip install -r requirements.txt
 
 If you dont want/have super user access, you can install it in a python virtual env
 in the root folder call::
