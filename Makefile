@@ -7,7 +7,6 @@ all:
 	@echo "    make venv - Create a virtual environment"
 	@echo "    make clean - Clean venv and git ignore files"
 
-
 install:
 	@type pip || { echo "ERROR: Please install python-pip!"; exit 1; }
 	pip install .
