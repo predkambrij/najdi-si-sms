@@ -1,6 +1,6 @@
 from setuptools import setup
 
-version = '1.0.0'
+version = '1.0.1.dev0'
 
 tests_require = [
     'responses',
@@ -42,7 +42,7 @@ setup(name='najdisi-sms',
       author_email='brodul@brodul.org',
       url='https://github.com/brodul/najdi-si-sms',
       license='BSD',
-      py_modules=['najdisi_sms'],
+      packages=['najdisi_sms'],
       include_package_data=True,
       zip_safe=False,
 
