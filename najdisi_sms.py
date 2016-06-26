@@ -1,19 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-"""
 
+"""
 from argparse import ArgumentParser
 import sys
 if sys.version_info < (3, 0):
     from ConfigParser import ConfigParser
 else:
     from configparser import ConfigParser
-import os
-import logging
+import os  # noqa
+import logging  # noqa
 
-import requests
-from bs4 import BeautifulSoup
+import requests  # noqa
+from bs4 import BeautifulSoup  # noqa
 
 logging.basicConfig()
 log = logging.getLogger("najdisi_sms")
@@ -32,13 +32,13 @@ class SettingParser(object):
             'najdisi_sms.ini'
         )
 
-        self.argparser = self.create_argparser()
+        self.argparser = self._create_argparser()
         self.parser_space = self.argparser.parse_args(self.args)
 
         self.namespace = self.merge_settings(self.parser_space)
         self.check_password_username(self.namespace)
 
-    def create_argparser(self):
+    def _create_argparser(self):
         parser = ArgumentParser()
         parser.add_argument(
             "rec_num",
@@ -74,8 +74,8 @@ class SettingParser(object):
             "--useragent",
             dest="useragent",
             help=u"HTTP User Agent",
-            default="Mozilla/5.0 (Windows; U; Windows NT 6.1; es-ES; rv:1.9.2.3)"
-            + "Gecko/20100401 Firefox/3.6.3"
+            default=("Mozilla/5.0 (Windows; U; Windows NT 6.1; es-ES; rv:1.9.2.3)"
+                     "Gecko/20100401 Firefox/3.6.3")
         )
         return parser
 
@@ -111,16 +111,6 @@ class SettingParser(object):
 def main():
     parser = SettingParser()
     namespace = parser.namespace
-    # parser = create_argparser()
-    # namespace = parser.parse_args()
-    #
-    # namespace = merge_settings(parser, namespace)
-    # try:
-    #     check_password_username(namespace)
-    # except LookupError as e:
-    #     parser.print_help()
-    #     log.error(e.args[0])
-    #     parser.exit(1)
 
     sender = SMSSender(namespace.username, namespace.password, namespace.useragent)
     sender.send(namespace.rec_num, namespace.message)
