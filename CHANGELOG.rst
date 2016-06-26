@@ -1,10 +1,10 @@
 Changelog
 =========
 
-1.0.1 (unreleased)
+1.0.1 (2016-06-26)
 ------------------
 
-- Nothing changed yet.
+- Fix setup.py
 
 
 1.0.0 (2016-06-26)

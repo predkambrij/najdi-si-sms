@@ -1,6 +1,6 @@
 from setuptools import setup
 
-version = '1.0.1.dev0'
+version = '1.0.1'
 
 tests_require = [
     'responses',
