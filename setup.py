@@ -50,6 +50,7 @@ setup(name='najdisi-sms',
           # -*- Extra requirements: -*-
           'requests==2.9.1',
           'beautifulsoup4==4.4.0',
+          'six==1.10.0',
       ],
       extras_require={
           'tests': testing_extras,
@@ -60,6 +61,6 @@ setup(name='najdisi-sms',
 
       entry_points="""
       [console_scripts]
-      najdisi-sms = najdisi_sms:main
+      najdisi-sms = najdisi_sms.cli:main
       """,
       )

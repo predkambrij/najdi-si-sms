@@ -39,8 +39,8 @@ class VCRTestCase(unitest.BetamaxTestCase):
 class LoadTestCase(VCRTestCase):
     """docstring for LoadTestCase"""
     def test_dummy(self):
-        import najdisi_sms
-        sender = najdisi_sms.SMSSender(najdisi_username, najdisi_password)
+        from najdisi_sms.api import SMSSender
+        sender = SMSSender(najdisi_username, najdisi_password)
         sender.s = self.session
         sender.send(najdisi_phonenum, "test")
 
