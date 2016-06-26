@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import requests
 from bs4 import BeautifulSoup
 
@@ -15,6 +17,9 @@ class SMSSender(object):
             + "Gecko/20100401 Firefox/3.6.3"
         self.useragent = useragent or da
         self.s = requests.Session()
+
+        self.daily_max = None
+        self.daily_left = None
 
     def normalize_receiver(self, receiver_num):
         """
@@ -63,7 +68,7 @@ class SMSSender(object):
         base_code, recipient = self.normalize_receiver(receiver)
 
         log.info('Network code: %s', base_code)
-        log.info('Receiver : %s', recipient)
+        log.info('Receiver: %s', recipient)
         log.info('Message: %s', msg)
         log.info('Sending SMS ...')
 
@@ -72,6 +77,7 @@ class SMSSender(object):
         response = self.s.get(
             'http://www.najdi.si/najdi.layoutnajdi.loginlink:login?t:ac=sms'
         )
+        assert 'Pozabil/-a sem geslo' in response.text
 
         soup = BeautifulSoup(response.text, "html.parser")
         formdata_els = soup.findAll(attrs={'name': 't:formdata'})
@@ -87,8 +93,14 @@ class SMSSender(object):
             'http://www.najdi.si/prijava.jsecloginform',
             data
         )
+        assert 'Prejemnik' in response.text
+        assert u'Pošiljatelj' in response.text
+        assert 'poslani SMS-i' in response.text
 
         soup = BeautifulSoup(response.text, 'html.parser')
+
+        smsno_div = soup.find('div', class_='smsno')
+        self.daily_left, self.daily_max = smsno_div.strong.text.split(' / ')
 
         formdata_els = soup.findAll(attrs={'name': 't:formdata'})
         formdata_vals = [formdata_el.attrs['value'] for
@@ -115,4 +127,25 @@ class SMSSender(object):
             data,
             headers={"X-Requested-With": "XMLHttpRequest"}
         )
-        soup = BeautifulSoup(response.text, 'html.parser')
+
+        html_response = response.json()['content']
+        assert 'Zaradi varnosti' in html_response
+
+        soup = BeautifulSoup(html_response, 'html.parser')
+        sender = soup.find('div', class_='sender').strong.text
+        reciever = soup.find('div', class_='reciever').strong.text
+        sent_text = soup.find('div', class_='msg').strong.text
+        left_today = soup.find('div', class_='msgleft').strong.text
+
+        return_dict = {
+            'sender': sender,
+            'reciever': reciever,
+            'text': sent_text,
+            'left_today': left_today,
+        }
+
+        log.info('Sent message:\n%s', sent_text)
+        log.info('Message left for today: %s', left_today)
+        log.debug('%s', return_dict)
+
+        return return_dict
