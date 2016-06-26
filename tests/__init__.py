@@ -1,30 +1,49 @@
+import os
 import unittest
+from unittest import TestCase
 
-import najdisi_sms
+import betamax
+from betamax_serializers import pretty_json
+from betamax.fixtures import unittest as unitest
 
 
-class ValidateAttrsTest (unittest.TestCase):
+najdisi_username = os.environ.get('USERNAME', 'fubar_username')
+najdisi_password = os.environ.get('PASSWORD', 'fubar_password')
+najdisi_phonenum = os.environ.get('PHONENUM', 'fubar_phonenum')
 
-    def setUp(self):
-        self.obj = lambda x: x
+here_ = os.path.dirname(os.path.realpath(__file__))
+betamax.Betamax.register_serializer(pretty_json.PrettyJSONSerializer)
+with betamax.Betamax.configure() as config:
+    config.cassette_library_dir = os.path.join(here_, 'fixtures', 'cassettes')
+    config.default_cassette_options['serialize_with'] = 'prettyjson'
+    config.define_cassette_placeholder(
+        '<NAJDISI_USERNAME>',
+        najdisi_username
+    )
+    config.define_cassette_placeholder(
+        '<NAJDISI_PASSWORD>',
+        najdisi_password
+    )
+    config.define_cassette_placeholder(
+        '<NAJDISI_PHONENUM>',
+        najdisi_phonenum
+    )
 
-        self.exception_dict = {
-            "attr": najdisi_sms.NoMsgError
-        }
 
-    def test_validation_fail(self):
-        self.assertRaises(
-            najdisi_sms.NoMsgError,
-            najdisi_sms.validate_attrs,
-            self.obj, self.exception_dict
-        )
+class VCRTestCase(unitest.BetamaxTestCase):
+    # Add your the rest of the helper methods you want for your
+    # integration tests
+    pass
 
-    def test_validation_success(self):
-        self.obj.attr = "Niii!"
-        self.assertIs(
-            najdisi_sms.validate_attrs(self.obj, self.exception_dict),
-            None
-        )
+
+class LoadTestCase(VCRTestCase):
+    """docstring for LoadTestCase"""
+    def test_dummy(self):
+        import najdisi_sms
+        sender = najdisi_sms.SMSSender(najdisi_username, najdisi_password)
+        sender.s = self.session
+        sender.send(najdisi_phonenum, "test")
+
 
 if __name__ == '__main__':
     unittest.main()
