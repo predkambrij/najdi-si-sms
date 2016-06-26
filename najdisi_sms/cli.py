@@ -4,8 +4,10 @@ import sys
 
 from six.moves.configparser import ConfigParser
 
-from . import log
+import utils
 from .api import SMSSender
+
+log = utils.get_logger()
 
 
 class SettingParser(object):

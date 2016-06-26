@@ -3,7 +3,9 @@
 import requests
 from bs4 import BeautifulSoup
 
-from . import log
+import utils
+
+log = utils.get_logger()
 
 
 class SMSSender(object):
