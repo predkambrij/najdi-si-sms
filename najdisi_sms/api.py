@@ -21,17 +21,17 @@ class SMSSender(object):
         self.daily_max = None
         self.daily_left = None
 
-    def normalize_receiver(self, receiver_num):
+    def normalize_reciever(self, reciever_num):
         """
         Split telephone number into area code and local number.
 
 
-        :receiver_num: Telephone number string.
+        :reciever_num: Telephone number string.
         :returns: Tuple with area code and local number.
 
         """
         # 031 123 456
-        who = receiver_num.strip()
+        who = reciever_num.strip()
 
         # don't change
         # 031 123 456 => 123456
@@ -54,10 +54,10 @@ class SMSSender(object):
 
         return msg
 
-    def send(self, receiver, msg):
+    def send(self, reciever, msg):
         """send the message.
 
-        :receiver: Receiver number (only Slovenian supported)
+        :reciever: reciever number (only Slovenian supported)
         :msg: SMS body message
         :returns: True if sending succeeded, else False.
 
@@ -65,10 +65,10 @@ class SMSSender(object):
 
         msg = self.check_msg_leng(msg)
 
-        base_code, recipient = self.normalize_receiver(receiver)
+        base_code, recipient = self.normalize_reciever(reciever)
 
         log.info('Network code: %s', base_code)
-        log.info('Receiver: %s', recipient)
+        log.info('reciever: %s', recipient)
         log.info('Message: %s', msg)
         log.info('Sending SMS ...')
 

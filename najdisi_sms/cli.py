@@ -30,7 +30,7 @@ class SettingParser(object):
         parser = ArgumentParser()
         parser.add_argument(
             "rec_num",
-            metavar=u"RECEIVER_NUM",
+            metavar=u"reciever_NUM",
             help="slovenian phone number starting with 0"
         )
         parser.add_argument(

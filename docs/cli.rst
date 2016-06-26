@@ -3,7 +3,7 @@ Standalone CLI command
 
 ::
 
-  Usage: najdisi-sms -u username -p password  RECEIVER_NUM  MESSAGE
+  Usage: najdisi-sms -u username -p password  reciever_NUM  MESSAGE
 
   Options:
     -h, --help            show this help message and exit
