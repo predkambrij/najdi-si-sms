@@ -49,7 +49,7 @@ setup(name='najdisi-sms',
       install_requires=[
           # -*- Extra requirements: -*-
           'requests==2.9.1',
-          'beautifulsoup4==4.3.2',
+          'beautifulsoup4==4.4.0',
       ],
       extras_require={
           'tests': testing_extras,
