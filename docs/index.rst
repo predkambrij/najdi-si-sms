@@ -11,12 +11,6 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-.. automodule:: najdisi_sms
-
-.. autoclass:: najdisi_sms.SMSSender
-    :members:
-
-
 
 Indices and tables
 ==================
