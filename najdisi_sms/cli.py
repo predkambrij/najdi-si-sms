@@ -4,7 +4,7 @@ import sys
 
 from six.moves.configparser import ConfigParser
 
-import utils
+from najdisi_sms import utils
 from .api import SMSSender
 
 log = utils.get_logger()

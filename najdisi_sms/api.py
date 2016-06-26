@@ -3,7 +3,7 @@
 import requests
 from bs4 import BeautifulSoup
 
-import utils
+from najdisi_sms import utils
 
 log = utils.get_logger()
 
