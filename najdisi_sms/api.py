@@ -88,7 +88,7 @@ class SMSSender(object):
             data
         )
 
-        soup = BeautifulSoup(response.text)
+        soup = BeautifulSoup(response.text, 'html.parser')
 
         formdata_els = soup.findAll(attrs={'name': 't:formdata'})
         formdata_vals = [formdata_el.attrs['value'] for
@@ -115,4 +115,4 @@ class SMSSender(object):
             data,
             headers={"X-Requested-With": "XMLHttpRequest"}
         )
-        soup = BeautifulSoup(response.text)
+        soup = BeautifulSoup(response.text, 'html.parser')
