@@ -62,7 +62,8 @@ class SettingParser(object):
             "--useragent",
             dest="useragent",
             help=u"HTTP User Agent",
-            default=("Mozilla/5.0 (Windows; U; Windows NT 6.1; es-ES; rv:1.9.2.3)"
+            default=("Mozilla/5.0 "
+                     "(Windows; U; Windows NT 6.1; es-ES; rv:1.9.2.3)"
                      "Gecko/20100401 Firefox/3.6.3")
         )
         return parser
@@ -83,7 +84,8 @@ class SettingParser(object):
                 setattr(
                     parser_space,
                     attr,
-                    getattr(parser_space, attr, None) or ini_config.get('najdisi_sms', attr)
+                    getattr(parser_space, attr, None) or
+                    ini_config.get('najdisi_sms', attr)
                 )
         elif not self.default_config_path == parser_space.config:
             log.info('Config file you specified not found!')
@@ -100,7 +102,11 @@ def main():
     parser = SettingParser()
     namespace = parser.namespace
 
-    sender = SMSSender(namespace.username, namespace.password, namespace.useragent)
+    sender = SMSSender(
+        namespace.username,
+        namespace.password,
+        namespace.useragent
+    )
     sender.send(namespace.rec_num, namespace.message)
 
 

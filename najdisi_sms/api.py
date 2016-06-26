@@ -91,7 +91,8 @@ class SMSSender(object):
         soup = BeautifulSoup(response.text)
 
         formdata_els = soup.findAll(attrs={'name': 't:formdata'})
-        formdata_vals = [formdata_el.attrs['value'] for formdata_el in formdata_els]
+        formdata_vals = [formdata_el.attrs['value'] for
+                         formdata_el in formdata_els]
 
         hidden_els = soup.findAll(attrs={'name': 'hidden'})
         hidden_value = hidden_els[0].attrs['value']
@@ -109,7 +110,8 @@ class SMSSender(object):
             't:zoneid': 'smsZone'
         }
         response = self.s.post(
-            "http://www.najdi.si/najdi.shortcutplaceholder.freesmsshortcut.smsform",
+            "http://www.najdi.si/"
+            "najdi.shortcutplaceholder.freesmsshortcut.smsform",
             data,
             headers={"X-Requested-With": "XMLHttpRequest"}
         )
