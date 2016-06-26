@@ -16,7 +16,7 @@ test: venv
 
 venv:
 	virtualenv --no-site-packages venv
-	venv/bin/pip install .[tests,docs]
+	venv/bin/pip install -e .[tests,docs]
 
 clean :
 	git clean -f -X -d
