@@ -136,6 +136,7 @@ class SMSSender(object):
         da = "Mozilla/5.0 (Windows; U; Windows NT 6.1; es-ES; rv:1.9.2.3)" \
             + "Gecko/20100401 Firefox/3.6.3"
         self.useragent = useragent or da
+        self.s = requests.Session()
 
     def normalize_receiver(self, receiver_num):
         """
@@ -188,7 +189,6 @@ class SMSSender(object):
         log.info('Message: %s', msg)
         log.info('Sending SMS ...')
 
-        self.s = requests.Session()
         self.s.headers.update({'User-Agent': self.useragent})
 
         response = self.s.get(
