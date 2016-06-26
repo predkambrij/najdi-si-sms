@@ -15,6 +15,7 @@ Contents:
    intro
    cli
    api
+   changelog
 
 Indices and tables
 ==================
