@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import contextlib
 
 import requests
 from bs4 import BeautifulSoup
@@ -18,10 +19,31 @@ class SMSSender(object):
         da = "Mozilla/5.0 (Windows; U; Windows NT 6.1; es-ES; rv:1.9.2.3)" \
             + "Gecko/20100401 Firefox/3.6.3"
         self.useragent = useragent or da
-        self.s = requests.Session()
 
-        self.daily_max = None
-        self.daily_left = None
+        self._daily_max = None
+        self._daily_left = None
+        self._daily_send = None
+
+    def get_values(self):
+        self._login()
+
+    @property
+    def daily_max(self):
+        if not self._daily_max:
+            self.get_values()
+        return self._daily_max
+
+    @property
+    def daily_send(self):
+        if not self._daily_send:
+            self.get_values()
+        return self._daily_send
+
+    @property
+    def daily_left(self):
+        if not self._daily_left:
+            self._daily_left = self.daily_max - self.daily_send
+        return self._daily_left
 
     def normalize_reciever(self, reciever_num):
         """
@@ -56,23 +78,9 @@ class SMSSender(object):
 
         return msg
 
-    def send(self, reciever, msg):
-        """send the message.
-
-        :reciever: reciever number (only Slovenian supported)
-        :msg: SMS body message
-        :returns: True if sending succeeded, else False.
-
-        """
-
-        msg = self.check_msg_leng(msg)
-
-        base_code, recipient = self.normalize_reciever(reciever)
-
-        log.info('Network code: %s', base_code)
-        log.info('reciever: %s', recipient)
-        log.info('Message: %s', msg)
-        log.info('Sending SMS ...')
+    @contextlib.contextmanager
+    def _login(self, keep_session=False):
+        self.s = requests.Session()
 
         self.s.headers.update({'User-Agent': self.useragent})
 
@@ -102,14 +110,43 @@ class SMSSender(object):
         soup = BeautifulSoup(response.text, 'html.parser')
 
         smsno_div = soup.find('div', class_='smsno')
-        self.daily_left, self.daily_max = smsno_div.strong.text.split(' / ')
+        self._daily_send, self._daily_max = \
+            [int(value) for value in smsno_div.strong.text.split(' / ')]
 
-        formdata_els = soup.findAll(attrs={'name': 't:formdata'})
-        formdata_vals = [formdata_el.attrs['value'] for
-                         formdata_el in formdata_els]
+        self._daily_left = self._daily_max - self._daily_send
 
-        hidden_els = soup.findAll(attrs={'name': 'hidden'})
-        hidden_value = hidden_els[0].attrs['value']
+        yield response
+
+        if not keep_session:
+            self.session.delete()
+
+    def send(self, reciever, msg):
+        """send the message.
+
+        :reciever: reciever number (only Slovenian supported)
+        :msg: SMS body message
+        :returns: True if sending succeeded, else False.
+
+        """
+
+        msg = self.check_msg_leng(msg)
+
+        base_code, recipient = self.normalize_reciever(reciever)
+
+        log.info('Network code: %s', base_code)
+        log.info('reciever: %s', recipient)
+        log.info('Message: %s', msg)
+        log.info('Sending SMS ...')
+
+        with self._login(keep_session=True) as response:
+            soup = BeautifulSoup(response.text, 'html.parser')
+
+            formdata_els = soup.findAll(attrs={'name': 't:formdata'})
+            formdata_vals = [formdata_el.attrs['value'] for
+                             formdata_el in formdata_els]
+
+            hidden_els = soup.findAll(attrs={'name': 'hidden'})
+            hidden_value = hidden_els[0].attrs['value']
 
         data = {
             't:ac': 'sms',
@@ -137,7 +174,8 @@ class SMSSender(object):
         sender = soup.find('div', class_='sender').strong.text
         reciever = soup.find('div', class_='reciever').strong.text
         sent_text = soup.find('div', class_='msg').strong.text
-        left_today = soup.find('div', class_='msgleft').strong.text
+        left_today = self._daily_left = \
+            int(soup.find('div', class_='msgleft').strong.text)
 
         return_dict = {
             'sender': sender,
@@ -149,5 +187,7 @@ class SMSSender(object):
         log.info('Sent message:\n%s', sent_text)
         log.info('Message left for today: %s', left_today)
         log.debug('%s', return_dict)
+
+        self.s.close()
 
         return return_dict
