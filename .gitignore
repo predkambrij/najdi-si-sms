@@ -13,3 +13,5 @@
 /.coverage
 /.tox
 /docs/_*
+
+*.pyc
